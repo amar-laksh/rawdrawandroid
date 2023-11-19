@@ -54,10 +54,11 @@
             cmake
             mold # modern lineker
             cppcheck
-            android-studio
+            # android-studio
             envsubst
             jdk11
             bear
+            llvmPackages_latest.llvm
           ];
 
           # Setting up the environment variables you need during

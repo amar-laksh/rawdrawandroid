@@ -602,43 +602,28 @@ int main(int argc, char **argv) {
     CNFGColor(0xFFFFFFFF);
     CNFGGetDimensions(&screenx, &screeny);
 
-    // Mesh in background
-    CNFGSetLineWidth(9);
-    // DrawHeightmap();
-    CNFGPenX = 100;
-    CNFGPenY = 150;
-    CNFGColor(0xffffffff);
-    CNFGDrawText("Accelerometer!", 15);
-    CNFGFlushRender();
-
-    CNFGPenX = 100;
-    CNFGPenY = 280;
-    char st[50];
-    // sprintf(st, "%dx%d %d %d %d %d %d %d\n%d %d\n%5.2f %5.2f %5.2f %d",
-    // screenx,
-    //         screeny, lastbuttonx, lastbuttony, lastmotionx, lastmotiony,
-    //         lastkey, lastkeydown, lastbid, lastmask, accx, accy, accz, accs);
-    sprintf(st, "X=%5.2f Y=%5.2f Z=%5.2f N=%d", accx, accy, accz, accs);
-
-    CNFGDrawText(st, 10);
-    CNFGSetLineWidth(2);
+    CNFGColor(0x000000AA);
+    CNFGTackRectangle(screenx / 4 - 100, 0, screenx / 4 + 100, screeny);
 
     // Square behind text
     CNFGColor(0x303030ff);
-    float accxOffset = (accx * -100);
     float accyOffset = (accy * 100);
-    short rectx1 = (screenx / 2 - 100) + accxOffset;
+    short rectx1 = (screenx / 4 - 100);
     short recty1 = (screeny / 2 - 100) + accyOffset;
-    short rectx2 = (screenx / 2) + 100 + accxOffset;
+    short rectx2 = (screenx / 4) + 100;
     short recty2 = (screeny / 2) + 100 + accyOffset;
-    if (accx <= 0.2 && accx >= -0.2) {
-
+    if (accy <= 0.2 && accy >= -0.2) {
       CNFGColor(0x008000ff);
     } else {
-      CNFGColor(0xff0000ff);
+      CNFGColor(0xff00007f);
     }
-    CNFGTackSegment(rectx1, recty1, rectx2, recty1);
+    // CNFGTackSegment(rectx1, recty1, rectx2, recty1);
     CNFGTackRectangle(rectx1, recty1, rectx2, recty2);
+    for (short i = 0; i < screeny; i += 1) {
+      // CNFGTackPixel((short)cos(i), (short)sin(i));
+      CNFGTackPixel(screenx / 4 - 100, i);
+      CNFGTackPixel(screenx / 4 + 100, i);
+    }
 
     CNFGPenX = 10;
     CNFGPenY = 10;
