@@ -1,4 +1,9 @@
 *.keystore
 makecapk/
-cnfgtest.apk
+*.apk
 AndroidManifest.xml
+.cache
+*.json
+*.map
+*.idsig
+

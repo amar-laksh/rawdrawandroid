@@ -57,7 +57,7 @@
             android-studio
             envsubst
             jdk11
-            alsa-lib
+            bear
           ];
 
           # Setting up the environment variables you need during

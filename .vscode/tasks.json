@@ -4,7 +4,7 @@
         {
             "label": "cycle build",
             "type": "shell",
-            "command": "make cycle"
+            "command": "bear -- make cycle"
         }
     ]
 }

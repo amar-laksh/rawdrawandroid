@@ -46,7 +46,7 @@ uint16_t audio_frequency;
 
 void SetupIMU() {
   sm = ASensorManager_getInstanceForPackage("gyroscope");
-  as = ASensorManager_getDefaultSensor(sm, ASENSOR_TYPE_GYROSCOPE);
+  as = ASensorManager_getDefaultSensor(sm, ASENSOR_TYPE_GRAVITY);
   no_sensor_for_gyro = as == NULL;
   l = ALooper_prepare(ALOOPER_PREPARE_ALLOW_NON_CALLBACKS);
   aeq = ASensorManager_createEventQueue(sm, (ALooper *)&l, 0, 0,
@@ -163,7 +163,7 @@ void DrawHeightmap() {
 
   tdMode(tdMODELVIEW);
   tdIdentity(gSMatrix);
-  tdTranslate(gSMatrix, 0, 0, -40);
+  tdTranslate(gSMatrix, 0, 0, -140);
   tdLookAt(gSMatrix, eye, at, up);
 
   float scale = 60. / HMX;
@@ -244,7 +244,7 @@ void DrawHeightmap() {
       float bright = tdDot(normal, lightdir);
       if (bright < 0)
         bright = 0;
-      CNFGColor(0xff | (((int)(bright * 90)) << 24));
+      CNFGColor(0xaa | (((int)(bright * 90)) << 24));
 
       //		CNFGTackPoly( &pto[0], 3 );		CNFGTackPoly(
       //&pto[3], 3 );
@@ -399,7 +399,7 @@ void CheckWebView(void *v) {
 
     // Send a WebMessage into the JavaScript code.
     char st[128];
-    sprintf(st, "Sexist JavaScript %d\n", runno);
+    sprintf(st, "Sexist lolz %d\n", runno);
     WebViewPostMessage(wvn, st, 0);
   }
 }
@@ -594,9 +594,9 @@ int main(int argc, char **argv) {
       continue;
     }
 
-    RunCallbackOnUIThread((void (*)(void *))WebViewRequestRenderToCanvas,
-                          &MyWebView);
-    RunCallbackOnUIThread(CheckWebView, &MyWebView);
+    // RunCallbackOnUIThread((void (*)(void *))WebViewRequestRenderToCanvas,
+    //                       &MyWebView);
+    // RunCallbackOnUIThread(CheckWebView, &MyWebView);
 
     CNFGClearFrame();
     CNFGColor(0xFFFFFFFF);
@@ -604,77 +604,96 @@ int main(int argc, char **argv) {
 
     // Mesh in background
     CNFGSetLineWidth(9);
-    DrawHeightmap();
-    CNFGPenX = 0;
-    CNFGPenY = 400;
+    // DrawHeightmap();
+    CNFGPenX = 100;
+    CNFGPenY = 150;
     CNFGColor(0xffffffff);
-    CNFGDrawText(assettext, 15);
+    CNFGDrawText("Accelerometer!", 15);
     CNFGFlushRender();
 
-    CNFGPenX = 0;
-    CNFGPenY = 480;
+    CNFGPenX = 100;
+    CNFGPenY = 280;
     char st[50];
-    sprintf(st, "%dx%d %d %d %d %d %d %d\n%d %d\n%5.2f %5.2f %5.2f %d", screenx,
-            screeny, lastbuttonx, lastbuttony, lastmotionx, lastmotiony,
-            lastkey, lastkeydown, lastbid, lastmask, accx, accy, accz, accs);
+    // sprintf(st, "%dx%d %d %d %d %d %d %d\n%d %d\n%5.2f %5.2f %5.2f %d",
+    // screenx,
+    //         screeny, lastbuttonx, lastbuttony, lastmotionx, lastmotiony,
+    //         lastkey, lastkeydown, lastbid, lastmask, accx, accy, accz, accs);
+    sprintf(st, "X=%5.2f Y=%5.2f Z=%5.2f N=%d", accx, accy, accz, accs);
+
     CNFGDrawText(st, 10);
     CNFGSetLineWidth(2);
 
     // Square behind text
     CNFGColor(0x303030ff);
-    CNFGTackRectangle(600, 0, 950, 350);
+    float accxOffset = (accx * -100);
+    float accyOffset = (accy * 100);
+    short rectx1 = (screenx / 2 - 100) + accxOffset;
+    short recty1 = (screeny / 2 - 100) + accyOffset;
+    short rectx2 = (screenx / 2) + 100 + accxOffset;
+    short recty2 = (screeny / 2) + 100 + accyOffset;
+    if (accx <= 0.2 && accx >= -0.2) {
+
+      CNFGColor(0x008000ff);
+    } else {
+      CNFGColor(0xff0000ff);
+    }
+    CNFGTackSegment(rectx1, recty1, rectx2, recty1);
+    CNFGTackRectangle(rectx1, recty1, rectx2, recty2);
 
     CNFGPenX = 10;
     CNFGPenY = 10;
 
     // Text
-    CNFGColor(0xffffffff);
-    for (i = 0; i < 1; i++) {
-      int c;
-      char tw[2] = {0, 0};
-      for (c = 0; c < 256; c++) {
-        tw[0] = c;
-
-        CNFGPenX = (c % 16) * 20 + 606;
-        CNFGPenY = (c / 16) * 20 + 5;
-        CNFGDrawText(tw, 4);
-      }
-    }
-
-    // Green triangles
-    CNFGPenX = 0;
-    CNFGPenY = 0;
-    CNFGColor(0x00FF00FF);
-
-    for (i = 0; i < 400; i++) {
-      RDPoint pp[3];
-      pp[0].x = (short)(50 * sin((float)(i + iframeno) * .01) + (i % 20) * 30);
-      pp[0].y =
-          (short)(50 * cos((float)(i + iframeno) * .01) + (i / 20) * 20) + 700;
-      pp[1].x = (short)(20 * sin((float)(i + iframeno) * .01) + (i % 20) * 30);
-      pp[1].y =
-          (short)(50 * cos((float)(i + iframeno) * .01) + (i / 20) * 20) + 700;
-      pp[2].x = (short)(10 * sin((float)(i + iframeno) * .01) + (i % 20) * 30);
-      pp[2].y =
-          (short)(30 * cos((float)(i + iframeno) * .01) + (i / 20) * 20) + 700;
-      CNFGTackPoly(pp, 3);
-    }
-
-    // Last WebMessage
-    CNFGColor(0xFFFFFFFF);
-    CNFGPenX = 0;
-    CNFGPenY = 100;
-    CNFGDrawText(fromJSBuffer, 6);
-
-    int x, y;
-    for (y = 0; y < 256; y++)
-      for (x = 0; x < 256; x++)
-        randomtexturedata[x + y * 256] =
-            x | ((x * 394543L + y * 355 + iframeno * 3) << 8);
-    CNFGBlitImage(randomtexturedata, 100, 600, 256, 256);
-
-    WebViewNativeGetPixels(&MyWebView, webviewdata, 500, 500);
-    CNFGBlitImage(webviewdata, 500, 640, 500, 500);
+    // CNFGColor(0xffffffff);
+    // for (i = 0; i < 1; i++) {
+    //   int c;
+    //   char tw[2] = {0, 0};
+    //   for (c = 0; c < 256; c++) {
+    //     tw[0] = c;
+    //
+    //     CNFGPenX = (c % 16) * 20 + 606;
+    //     CNFGPenY = (c / 16) * 20 + 5;
+    //     CNFGDrawText(tw, 4);
+    //   }
+    // }
+    //
+    // // Green triangles
+    // CNFGPenX = 0;
+    // CNFGPenY = 0;
+    // CNFGColor(0x00FF00FF);
+    //
+    // for (i = 0; i < 400; i++) {
+    //   RDPoint pp[3];
+    //   pp[0].x = (short)(50 * sin((float)(i + iframeno) * .01) + (i % 20) *
+    //   30); pp[0].y =
+    //       (short)(50 * cos((float)(i + iframeno) * .01) + (i / 20) * 20) +
+    //       700;
+    //   pp[1].x = (short)(20 * sin((float)(i + iframeno) * .01) + (i % 20) *
+    //   30); pp[1].y =
+    //       (short)(50 * cos((float)(i + iframeno) * .01) + (i / 20) * 20) +
+    //       700;
+    //   pp[2].x = (short)(10 * sin((float)(i + iframeno) * .01) + (i % 20) *
+    //   30); pp[2].y =
+    //       (short)(30 * cos((float)(i + iframeno) * .01) + (i / 20) * 20) +
+    //       700;
+    //   CNFGTackPoly(pp, 3);
+    // }
+    //
+    // // Last WebMessage
+    // CNFGColor(0xFFFFFFFF);
+    // CNFGPenX = 0;
+    // CNFGPenY = 100;
+    // CNFGDrawText(fromJSBuffer, 6);
+    //
+    // int x, y;
+    // for (y = 0; y < 256; y++)
+    //   for (x = 0; x < 256; x++)
+    //     randomtexturedata[x + y * 256] =
+    //         x | ((x * 394543L + y * 355 + iframeno * 3) << 8);
+    // CNFGBlitImage(randomtexturedata, 100, 600, 256, 256);
+    //
+    // WebViewNativeGetPixels(&MyWebView, webviewdata, 500, 500);
+    // CNFGBlitImage(webviewdata, 500, 640, 500, 500);
 
     frames++;
     // On Android, CNFGSwapBuffers must be called, and
