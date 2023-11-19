@@ -625,22 +625,12 @@ int main(int argc, char **argv) {
       CNFGTackPixel(screenx / 4 + 100, i);
     }
 
-    CNFGPenX = 10;
-    CNFGPenY = 10;
-
     // Text
-    // CNFGColor(0xffffffff);
-    // for (i = 0; i < 1; i++) {
-    //   int c;
-    //   char tw[2] = {0, 0};
-    //   for (c = 0; c < 256; c++) {
-    //     tw[0] = c;
-    //
-    //     CNFGPenX = (c % 16) * 20 + 606;
-    //     CNFGPenY = (c / 16) * 20 + 5;
-    //     CNFGDrawText(tw, 4);
-    //   }
-    // }
+    CNFGPenX = 400;
+    CNFGPenY = 200;
+    CNFGColor(0xffffffff);
+    CNFGDrawText("Hello world", 15);
+
     //
     // // Green triangles
     // CNFGPenX = 0;

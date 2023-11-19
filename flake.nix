@@ -66,6 +66,9 @@
           shellHook =
             ''
               export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:"${pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc.lib ]}"
+              echo "Starting wifi adb setup...";
+              sudo adb kill-server
+              sudo bash ./adb_connect.sh
             ''
           ;
         };
